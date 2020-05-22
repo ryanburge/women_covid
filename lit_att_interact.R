@@ -5,7 +5,11 @@ regg <- m20 %>%
   mutate(gender = frcode(q2 == 1 ~ "Men",
                          q2 == 2 ~ "Women")) %>% 
   mutate(trust_all = 6 - q37_6) %>% 
+  mutate(fem_nat = 6 - q35_6) %>% 
   mutate(attend = 7 - q6) %>% 
+  mutate(mf = q100_1 - q100_2) %>% 
+  mutate(mas = q100_1) %>% 
+  mutate(fem = q100_2) %>% 
   mutate(white = case_when(q104_1 == 1 ~ 1, TRUE ~ 0)) %>% 
   mutate(pid2 = frcode(q91 == 1 | q91 == 2 | q91 == 3 ~ "Democrat", 
                        q91 == 5 | q91 == 6 | q91 == 7 ~ "Republican")) %>% 
@@ -17,9 +21,9 @@ regg <- m20 %>%
                        q53 == 2 ~ "Inspired, not Literal",
                        q53 == 3 ~ "Written by Men")) %>% 
   mutate(age=2020-q3_1) %>% 
-  select(gender, trust_all, pid2, rep, literal, lit2, educ = q105, income = q108, defy2, attend, white, age)
+  select(gender, trust_all, mf, mas, fem, fem_nat, pid2, rep, literal, lit2, fem, educ = q105, income = q108, defy2, attend, white, age, reltrad)
 
-reg1 <- glm(defy2 ~ attend*gender*lit2 + white + age + income + educ, data = regg, family = "binomial")
+reg1 <- glm(defy2 ~ attend*gender*lit2 + white + age + income + educ + reltrad, data = regg, family = "binomial")
 
 gg <- interact_plot(reg1, pred= attend, modx = gender, mod2 = lit2, int.width = .76, interval = TRUE, mod2.labels = c("Literal", "Inspired", "Written by Men")) 
 
@@ -30,5 +34,23 @@ gg +
   theme_gg("Jost", legend = TRUE) +
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6), labels = c("Never", "Seldom", "Yearly", "Monthly", "Weekly", "Weekly+")) +
-  labs(x = "Church Attendance", y = "Church Should Defy Govt. Order", title = "Interaction of Church Attendance and Gender on Defying Govt. Orders") +
-  ggsave("D://women_covid/images/defy_interact_att_lit.png", type = "cairo-png", width =10)
+  theme(plot.title = element_text(size = 12)) +
+  labs(x = "The US is becoming too feminized and weak", y = "Church Should Defy Govt. Order", title = "") +
+  ggsave("D://women_covid/images/defy_interact_literalism.png", type = "cairo-png", width =10)
+
+
+reg1 <- glm(defy2 ~ fem_nat*gender + white + attend + literal + age + income + educ + reltrad, data = regg, family = "binomial")
+
+gg <- interact_plot(reg1, pred= fem_nat, modx = gender, int.width = .76, interval = TRUE) 
+
+
+gg +
+  fill4_3() +
+  color4_3() +
+  y_pct() + 
+  theme_gg("Jost", legend = TRUE) +
+  theme(panel.spacing = unit(1, "lines")) +
+  scale_x_continuous(breaks = c(1,2,3,4,5), labels = c("Strongly\nDisagree", "Disagree", "Neither", "Agree", "Strongly\nAgree")) +
+  theme(plot.title = element_text(size = 12)) +
+  labs(x = "The US is becoming too feminized and weak", y = "Church Should Defy Govt. Order", title = "") +
+  ggsave("D://women_covid/images/defy_interact_fem_nat.png", type = "cairo-png", width =7)

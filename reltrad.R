@@ -13,7 +13,10 @@ m20 <- m20 %>% mutate(attend5=car::recode(q6, "1:2=5; 3=4; 4=3; 5=2; 6=1"))
 m20 <- m20 %>% mutate(attend6 = 7 - q6)
 m20 <- m20 %>% mutate(hiatt = recode(q6, "1:3=1; else=0"))  
 
-
+m20 <- m20 %>% 
+  mutate(gender = frcode(q2 == 1 ~ "Men",
+                         q2 == 2 ~ "Women")) %>% 
+  mutate(female = case_when(q2 == 2 ~ 1, TRUE ~ 0))
 
 
 #RELTRAD Stuff####
