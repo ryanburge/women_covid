@@ -35,22 +35,6 @@ gg +
   theme(panel.spacing = unit(1, "lines")) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6), labels = c("Never", "Seldom", "Yearly", "Monthly", "Weekly", "Weekly+")) +
   theme(plot.title = element_text(size = 12)) +
-  labs(x = "The US is becoming too feminized and weak", y = "Church Should Defy Govt. Order", title = "") +
+  labs(x = "Church Attendance", y = "Church Should Defy Govt. Order", title = "") +
   ggsave("D://women_covid/images/defy_interact_literalism.png", type = "cairo-png", width =10)
 
-
-reg1 <- glm(defy2 ~ fem_nat*gender + white + attend + literal + age + income + educ + reltrad, data = regg, family = "binomial")
-
-gg <- interact_plot(reg1, pred= fem_nat, modx = gender, int.width = .76, interval = TRUE) 
-
-
-gg +
-  fill4_3() +
-  color4_3() +
-  y_pct() + 
-  theme_gg("Jost", legend = TRUE) +
-  theme(panel.spacing = unit(1, "lines")) +
-  scale_x_continuous(breaks = c(1,2,3,4,5), labels = c("Strongly\nDisagree", "Disagree", "Neither", "Agree", "Strongly\nAgree")) +
-  theme(plot.title = element_text(size = 12)) +
-  labs(x = "The US is becoming too feminized and weak", y = "Church Should Defy Govt. Order", title = "") +
-  ggsave("D://women_covid/images/defy_interact_fem_nat.png", type = "cairo-png", width =7)
